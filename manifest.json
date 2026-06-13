@@ -1,13 +1,10 @@
 {
   "name": "Apps Sehat Tije",
-  "short_name": "Sehat Tije",
-  "description": "Catatan kesehatan pribadi Tri Tjahyono.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "short_name": "Apps Sehat",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#eef6f7",
   "theme_color": "#0f766e",
+  "start_url": "./index.html",
   "icons": [
     {
       "src": "icon-192.png",
