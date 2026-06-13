@@ -1,10 +1,11 @@
 {
   "name": "Apps Sehat Tije",
   "short_name": "Apps Sehat",
-  "display": "standalone",
-  "background_color": "#eef6f7",
-  "theme_color": "#0f766e",
   "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef7f6",
+  "theme_color": "#0f766e",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
