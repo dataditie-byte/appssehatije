@@ -1,863 +1,436 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Apps Sehat Tije</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Apps Sehat Tije</title>
 
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0f766e" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #eef7f6;
-      color: #1f2937;
-    }
-
-    body {
-      padding-bottom: calc(96px + env(safe-area-inset-bottom));
-    }
-
-    .app {
-      max-width: 720px;
-      margin: auto;
-      min-height: 100vh;
-      background: linear-gradient(180deg,#eef7f6,#f9fafb);
-    }
-
-    .header {
-      background: linear-gradient(135deg,#0f766e,#2563eb);
-      color: white;
-      text-align: center;
-      padding: 42px 20px 36px;
-      border-bottom-left-radius: 36px;
-      border-bottom-right-radius: 36px;
-    }
-
-    .header h1 {
-      margin: 0;
-      font-size: 34px;
-      font-weight: 800;
-    }
-
-    .header p {
-      margin: 12px 0 0;
-      font-size: 18px;
-    }
-
-    .content { padding: 22px; }
-
-    .section { display: none; }
-    .section.active { display: block; }
-
-    .card {
-      background: white;
-      border-radius: 26px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 12px 30px rgba(15,118,110,.12);
-    }
-
-    h2 {
-      margin: 0 0 14px;
-      font-size: 24px;
-      color: #111827;
-    }
-
-    .profile p {
-      font-size: 19px;
-      line-height: 1.4;
-      margin: 0;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 18px;
-      margin-bottom: 20px;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 24px;
-      padding: 26px 12px;
-      text-align: center;
-      box-shadow: 0 10px 26px rgba(15,118,110,.12);
-    }
-
-    .number {
-      font-size: 42px;
-      font-weight: 800;
-      color: #2563eb;
-    }
-
-    .label {
-      font-size: 17px;
-      color: #6b7280;
-      margin-top: 6px;
-    }
-
-    label {
-      display: block;
-      font-weight: 700;
-      margin: 14px 0 7px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 16px;
-      padding: 14px;
-      font-size: 16px;
-      background: white;
-    }
-
-    textarea { min-height: 85px; }
-
-    .time-grid {
-      display: grid;
-      grid-template-columns: repeat(2,1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .time-check {
-      background: #f9fafb;
-      border-radius: 16px;
-      padding: 12px;
-      font-weight: 700;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .time-check input { width: auto; }
-
-    button.primary {
-      width: 100%;
-      margin-top: 16px;
-      border: none;
-      border-radius: 18px;
-      padding: 15px;
-      font-size: 17px;
-      font-weight: 800;
-      color: white;
-      background: linear-gradient(135deg,#0f766e,#2563eb);
-      cursor: pointer;
-    }
-
-    button.small-btn {
-      border: none;
-      border-radius: 12px;
-      padding: 8px 10px;
-      margin-top: 10px;
-      font-weight: 800;
-      background: #f3f4f6;
-      color: #374151;
-      cursor: pointer;
-    }
-
-    button.danger {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .list-item {
-      border-bottom: 1px solid #e5e7eb;
-      padding: 15px 0;
-    }
-
-    .list-item:last-child { border-bottom: none; }
-
-    .list-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: #111827;
-    }
-
-    .list-meta {
-      margin-top: 6px;
-      color: #6b7280;
-      line-height: 1.45;
-    }
-
-    .badge-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .badge {
-      background: #ecfeff;
-      color: #0f766e;
-      padding: 7px 11px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .empty {
-      text-align: center;
-      color: #6b7280;
-      padding: 24px 8px;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 999;
-      max-width: 720px;
-      margin: auto;
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(14px);
-      border-top: 1px solid #e5e7eb;
-      padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
-      display: flex;
-      justify-content: space-around;
-    }
-
-    .nav-item {
-      border: none;
-      background: transparent;
-      color: #64748b;
-      font-weight: 800;
-      font-size: 12px;
-      padding: 8px 6px;
-      border-radius: 18px;
-      min-width: 52px;
-      cursor: pointer;
-    }
-
-    .nav-item.active {
-      background: #dbeafe;
-      color: #2563eb;
-    }
-
-    .nav-icon {
-      display: block;
-      font-size: 25px;
-      margin-bottom: 3px;
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Arial,sans-serif;background:#eef7f6;color:#1f2937}
+body{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+.app{max-width:720px;margin:auto;min-height:100vh;background:linear-gradient(180deg,#eef7f6,#f9fafb)}
+.header{background:linear-gradient(135deg,#0f766e,#2563eb);color:white;text-align:center;padding:42px 20px 36px;border-bottom-left-radius:36px;border-bottom-right-radius:36px}
+.header h1{margin:0;font-size:34px;font-weight:800}
+.header p{margin:12px 0 0;font-size:18px}
+.content{padding:22px}
+.section{display:none}
+.section.active{display:block}
+.card{background:white;border-radius:26px;padding:22px;margin-bottom:20px;box-shadow:0 12px 30px rgba(15,118,110,.12)}
+h2{margin:0 0 14px;font-size:24px;color:#111827}
+.profile p{font-size:19px;line-height:1.4;margin:0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:20px}
+.stat-card{background:white;border-radius:24px;padding:26px 12px;text-align:center;box-shadow:0 10px 26px rgba(15,118,110,.12)}
+.number{font-size:42px;font-weight:800;color:#2563eb}
+.label{font-size:17px;color:#6b7280;margin-top:6px}
+label{display:block;font-weight:700;margin:14px 0 7px}
+input,select,textarea{width:100%;border:1px solid #d1d5db;border-radius:16px;padding:14px;font-size:16px;background:white}
+textarea{min-height:85px}
+button.primary{width:100%;margin-top:16px;border:none;border-radius:18px;padding:15px;font-size:17px;font-weight:800;color:white;background:linear-gradient(135deg,#0f766e,#2563eb);cursor:pointer}
+button.secondary{width:100%;margin-top:10px;border:none;border-radius:18px;padding:14px;font-size:16px;font-weight:800;background:#e0f2fe;color:#0369a1;cursor:pointer}
+button.small-btn{border:none;border-radius:12px;padding:8px 10px;margin-top:10px;font-weight:800;background:#f3f4f6;color:#374151;cursor:pointer}
+button.danger{background:#fee2e2;color:#b91c1c}
+.list-item{border-bottom:1px solid #e5e7eb;padding:15px 0}
+.list-item:last-child{border-bottom:none}
+.list-title{font-size:18px;font-weight:800;color:#111827}
+.list-meta{margin-top:6px;color:#6b7280;line-height:1.45}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.badge{background:#ecfeff;color:#0f766e;padding:7px 11px;border-radius:999px;font-size:13px;font-weight:800}
+.empty{text-align:center;color:#6b7280;padding:24px 8px}
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:999;max-width:720px;margin:auto;background:rgba(255,255,255,.96);backdrop-filter:blur(14px);border-top:1px solid #e5e7eb;padding:8px 6px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:space-around}
+.nav-item{border:none;background:transparent;color:#64748b;font-weight:800;font-size:12px;padding:8px 6px;border-radius:18px;min-width:52px;cursor:pointer}
+.nav-item.active{background:#dbeafe;color:#2563eb}
+.nav-icon{display:block;font-size:25px;margin-bottom:3px}
+@media(max-width:420px){.content{padding:18px}.header h1{font-size:30px}.nav-item{font-size:11px;min-width:48px}}
+</style>
 </head>
 
 <body>
 <div class="app">
+<header class="header">
+<h1>Apps Sehat Tije</h1>
+<p>Tri Tjahyono • Catatan kesehatan harian</p>
+</header>
 
-  <header class="header">
-    <h1>Apps Sehat Tije</h1>
-    <p>Tri Tjahyono • Catatan kesehatan harian</p>
-  </header>
+<main class="content">
 
-  <main class="content">
+<section id="beranda" class="section active">
+<div class="card profile">
+<h2>Tri Tjahyono</h2>
+<p>Monitoring obat, laboratorium, diagnosa, pengingat, dan aktivitas fisik harian.</p>
+</div>
 
-    <section id="beranda" class="section active">
-      <div class="card profile">
-        <h2>Tri Tjahyono</h2>
-        <p>Monitoring obat, laboratorium, diagnosa, pengingat, dan aktivitas fisik harian.</p>
-      </div>
+<div class="stats">
+<div class="stat-card"><div id="statObat" class="number">0</div><div class="label">Obat</div></div>
+<div class="stat-card"><div id="statLab" class="number">0</div><div class="label">Lab</div></div>
+<div class="stat-card"><div id="statDiagnosa" class="number">0</div><div class="label">Diagnosa</div></div>
+<div class="stat-card"><div id="statAktivitas" class="number">0</div><div class="label">Aktivitas</div></div>
+</div>
 
-      <div class="stats">
-        <div class="stat-card"><div id="statObat" class="number">0</div><div class="label">Obat</div></div>
-        <div class="stat-card"><div id="statLab" class="number">0</div><div class="label">Lab</div></div>
-        <div class="stat-card"><div id="statDiagnosa" class="number">0</div><div class="label">Diagnosa</div></div>
-        <div class="stat-card"><div id="statAktivitas" class="number">0</div><div class="label">Aktivitas</div></div>
-      </div>
+<div class="card"><h2>Pengingat Obat Hari Ini</h2><div id="pengingatObatHariIni"></div></div>
+<div class="card"><h2>Hasil Lab Terakhir</h2><div id="labTerakhir"></div></div>
 
-      <div class="card">
-        <h2>Pengingat Obat Hari Ini</h2>
-        <div id="pengingatObatHariIni"></div>
-      </div>
+<div class="card">
+<h2>Backup & Restore</h2>
+<button class="secondary" onclick="backupData()">Backup Data JSON</button>
+<label>Restore Data</label>
+<input type="file" accept=".json" onchange="restoreData(event)">
+</div>
+</section>
 
-      <div class="card">
-        <h2>Hasil Lab Terakhir</h2>
-        <div id="labTerakhir"></div>
-      </div>
-    </section>
+<section id="obat" class="section">
+<div class="card">
+<h2>Tambah Obat</h2>
+<label>Nama Obat</label>
+<input id="obatNama" placeholder="Contoh: Amlodipine">
+<label>Aturan Minum</label>
+<input id="obatAturan" placeholder="Contoh: 1 tablet setelah makan">
+<label>Jam Minum</label>
+<input type="time" id="obatJam">
+<label>Catatan</label>
+<textarea id="obatCatatan"></textarea>
+<button class="primary" onclick="tambahObat()">Simpan Obat</button>
+</div>
+<div class="card"><h2>Daftar Obat A-Z</h2><div id="daftarObat"></div></div>
+</section>
 
-    <section id="obat" class="section">
-      <div class="card">
-        <h2>Tambah Obat</h2>
+<section id="lab" class="section">
+<div class="card">
+<h2>Tambah Hasil Lab</h2>
+<label>Tanggal</label><input type="date" id="labTanggal">
+<label>Jenis Lab</label>
+<select id="labJenis">
+<option>Gula Darah</option><option>Kolesterol</option><option>Asam Urat</option>
+<option>SGOT</option><option>SGPT</option><option>Hb</option><option>Lainnya</option>
+</select>
+<label>Nilai</label><input type="number" id="labNilai" placeholder="Contoh: 120">
+<label>Catatan</label><textarea id="labCatatan"></textarea>
+<button class="primary" onclick="tambahLab()">Simpan Lab</button>
+</div>
+<div class="card"><h2>Grafik Lab Berdasarkan Tanggal</h2><canvas id="labChart"></canvas></div>
+<div class="card"><h2>Riwayat Lab</h2><div id="daftarLab"></div></div>
+</section>
 
-        <label>Nama Obat</label>
-        <input id="obatNama" placeholder="Contoh: Amlodipine" />
+<section id="diagnosa" class="section">
+<div class="card">
+<h2>Tambah Diagnosa</h2>
+<label>Tanggal</label><input type="date" id="diagTanggal">
+<label>Diagnosa</label><input id="diagNama" placeholder="Contoh: Hipertensi">
+<label>Dokter / RS</label><input id="diagDokter" placeholder="Contoh: dr. SpPD / RS">
+<label>Catatan</label><textarea id="diagCatatan"></textarea>
+<button class="primary" onclick="tambahDiagnosa()">Simpan Diagnosa</button>
+</div>
+<div class="card"><h2>Riwayat Diagnosa</h2><div id="daftarDiagnosa"></div></div>
+</section>
 
-        <label>Aturan Minum</label>
-        <input id="obatAturan" placeholder="Contoh: 1 tablet setelah makan" />
+<section id="pengingat" class="section">
+<div class="card">
+<h2>Tambah Pengingat</h2>
+<label>Jenis Pengingat</label>
+<select id="ingatJenis"><option>Kontrol Dokter</option><option>Minum Obat</option><option>Cek Lab</option><option>Aktivitas Fisik</option></select>
+<label>Tanggal</label><input type="date" id="ingatTanggal">
+<label>Jam</label><input type="time" id="ingatJam">
+<label>Catatan</label><textarea id="ingatCatatan"></textarea>
+<button class="primary" onclick="tambahPengingat()">Simpan Pengingat</button>
+</div>
+<div class="card"><h2>Daftar Pengingat</h2><div id="daftarPengingat"></div></div>
+</section>
 
-        <label>Jadwal</label>
-        <div class="time-grid">
-          <label class="time-check"><input type="checkbox" id="obatPagi"> Pagi</label>
-          <label class="time-check"><input type="checkbox" id="obatSiang"> Siang</label>
-          <label class="time-check"><input type="checkbox" id="obatSore"> Sore</label>
-          <label class="time-check"><input type="checkbox" id="obatMalam"> Malam</label>
-        </div>
+<section id="aktivitas" class="section">
+<div class="card">
+<h2>Tambah Aktivitas</h2>
+<label>Tanggal</label><input type="date" id="aktTanggal">
+<label>Jenis Aktivitas</label>
+<select id="aktJenis">
+<option>Jalan Kaki</option><option>Lari</option><option>Sepeda</option><option>Senam</option>
+<option>Renang</option><option>Gym</option><option>Peregangan</option><option>Yoga</option><option>Lainnya</option>
+</select>
+<label>Durasi / Jarak</label><input id="aktDurasi" placeholder="Contoh: 30 menit / 5 km">
+<label>Catatan</label><textarea id="aktCatatan"></textarea>
+<button class="primary" onclick="tambahAktivitas()">Simpan Aktivitas</button>
+</div>
+<div class="card"><h2>Riwayat Aktivitas</h2><div id="daftarAktivitas"></div></div>
+</section>
 
-        <label>Catatan</label>
-        <textarea id="obatCatatan"></textarea>
-
-        <button class="primary" onclick="tambahObat()">Simpan Obat</button>
-      </div>
-
-      <div class="card">
-        <h2>Daftar Obat A-Z</h2>
-        <div id="daftarObat"></div>
-      </div>
-    </section>
-
-    <section id="lab" class="section">
-      <div class="card">
-        <h2>Tambah Hasil Lab</h2>
-
-        <label>Tanggal</label>
-        <input type="date" id="labTanggal" />
-
-        <label>Jenis Lab</label>
-        <select id="labJenis">
-          <option>Gula Darah</option>
-          <option>Kolesterol</option>
-          <option>Asam Urat</option>
-          <option>SGOT</option>
-          <option>SGPT</option>
-          <option>Hb</option>
-          <option>Lainnya</option>
-        </select>
-
-        <label>Nilai</label>
-        <input type="number" id="labNilai" placeholder="Contoh: 120" />
-
-        <label>Catatan</label>
-        <textarea id="labCatatan"></textarea>
-
-        <button class="primary" onclick="tambahLab()">Simpan Lab</button>
-      </div>
-
-      <div class="card">
-        <h2>Grafik Lab Berdasarkan Tanggal</h2>
-        <canvas id="labChart"></canvas>
-      </div>
-
-      <div class="card">
-        <h2>Riwayat Lab</h2>
-        <div id="daftarLab"></div>
-      </div>
-    </section>
-
-    <section id="diagnosa" class="section">
-      <div class="card">
-        <h2>Tambah Diagnosa</h2>
-
-        <label>Tanggal</label>
-        <input type="date" id="diagTanggal" />
-
-        <label>Diagnosa</label>
-        <input id="diagNama" placeholder="Contoh: Hipertensi" />
-
-        <label>Dokter / RS</label>
-        <input id="diagDokter" placeholder="Contoh: dr. SpPD / RS ..." />
-
-        <label>Catatan</label>
-        <textarea id="diagCatatan"></textarea>
-
-        <button class="primary" onclick="tambahDiagnosa()">Simpan Diagnosa</button>
-      </div>
-
-      <div class="card">
-        <h2>Riwayat Diagnosa</h2>
-        <div id="daftarDiagnosa"></div>
-      </div>
-    </section>
-
-    <section id="pengingat" class="section">
-      <div class="card">
-        <h2>Tambah Pengingat</h2>
-
-        <label>Jenis Pengingat</label>
-        <select id="ingatJenis">
-          <option>Kontrol Dokter</option>
-          <option>Minum Obat</option>
-          <option>Cek Lab</option>
-          <option>Aktivitas Fisik</option>
-        </select>
-
-        <label>Tanggal</label>
-        <input type="date" id="ingatTanggal" />
-
-        <label>Jam</label>
-        <input type="time" id="ingatJam" />
-
-        <label>Catatan</label>
-        <textarea id="ingatCatatan"></textarea>
-
-        <button class="primary" onclick="tambahPengingat()">Simpan Pengingat</button>
-      </div>
-
-      <div class="card">
-        <h2>Daftar Pengingat</h2>
-        <div id="daftarPengingat"></div>
-      </div>
-    </section>
-
-    <section id="aktivitas" class="section">
-      <div class="card">
-        <h2>Tambah Aktivitas</h2>
-
-        <label>Tanggal</label>
-        <input type="date" id="aktTanggal" />
-
-        <label>Jenis Aktivitas</label>
-        <select id="aktJenis">
-          <option>Jalan Kaki</option>
-          <option>Lari</option>
-          <option>Sepeda</option>
-          <option>Senam</option>
-          <option>Renang</option>
-          <option>Gym</option>
-          <option>Peregangan</option>
-          <option>Yoga</option>
-          <option>Lainnya</option>
-        </select>
-
-        <label>Durasi / Jarak</label>
-        <input id="aktDurasi" placeholder="Contoh: 30 menit / 5 km" />
-
-        <label>Catatan</label>
-        <textarea id="aktCatatan"></textarea>
-
-        <button class="primary" onclick="tambahAktivitas()">Simpan Aktivitas</button>
-      </div>
-
-      <div class="card">
-        <h2>Riwayat Aktivitas</h2>
-        <div id="daftarAktivitas"></div>
-      </div>
-    </section>
-
-  </main>
+</main>
 </div>
 
 <nav class="bottom-nav">
-  <button class="nav-item active" onclick="showSection('beranda',this)"><span class="nav-icon">🏠</span>Beranda</button>
-  <button class="nav-item" onclick="showSection('obat',this)"><span class="nav-icon">💊</span>Obat</button>
-  <button class="nav-item" onclick="showSection('lab',this)"><span class="nav-icon">🧪</span>Lab</button>
-  <button class="nav-item" onclick="showSection('diagnosa',this)"><span class="nav-icon">🩺</span>Diagnosa</button>
-  <button class="nav-item" onclick="showSection('pengingat',this)"><span class="nav-icon">⏰</span>Pengingat</button>
-  <button class="nav-item" onclick="showSection('aktivitas',this)"><span class="nav-icon">🏃</span>Aktivitas</button>
+<button class="nav-item active" onclick="showSection('beranda',this)"><span class="nav-icon">🏠</span>Beranda</button>
+<button class="nav-item" onclick="showSection('obat',this)"><span class="nav-icon">💊</span>Obat</button>
+<button class="nav-item" onclick="showSection('lab',this)"><span class="nav-icon">🧪</span>Lab</button>
+<button class="nav-item" onclick="showSection('diagnosa',this)"><span class="nav-icon">🩺</span>Diagnosa</button>
+<button class="nav-item" onclick="showSection('pengingat',this)"><span class="nav-icon">⏰</span>Pengingat</button>
+<button class="nav-item" onclick="showSection('aktivitas',this)"><span class="nav-icon">🏃</span>Aktivitas</button>
 </nav>
 
 <script>
-  let obatData = JSON.parse(localStorage.getItem("obatData")) || [];
-  let labData = JSON.parse(localStorage.getItem("labData")) || [];
-  let diagnosaData = JSON.parse(localStorage.getItem("diagnosaData")) || [];
-  let pengingatData = JSON.parse(localStorage.getItem("pengingatData")) || [];
-  let aktivitasData = JSON.parse(localStorage.getItem("aktivitasData")) || [];
-
-  let labChartInstance = null;
-
-  function simpan() {
-    localStorage.setItem("obatData", JSON.stringify(obatData));
-    localStorage.setItem("labData", JSON.stringify(labData));
-    localStorage.setItem("diagnosaData", JSON.stringify(diagnosaData));
-    localStorage.setItem("pengingatData", JSON.stringify(pengingatData));
-    localStorage.setItem("aktivitasData", JSON.stringify(aktivitasData));
-    renderAll();
-  }
-
-  function showSection(id, btn) {
-    document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-
-    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
-    btn.classList.add("active");
-
-    if (id === "lab") setTimeout(renderGrafikLab, 200);
-  }
-
-  function tambahObat() {
-    const nama = document.getElementById("obatNama").value.trim();
-    if (!nama) return alert("Nama obat wajib diisi");
-
-    obatData.push({
-      nama,
-      aturan: document.getElementById("obatAturan").value,
-      pagi: document.getElementById("obatPagi").checked,
-      siang: document.getElementById("obatSiang").checked,
-      sore: document.getElementById("obatSore").checked,
-      malam: document.getElementById("obatMalam").checked,
-      catatan: document.getElementById("obatCatatan").value
-    });
-
-    document.getElementById("obatNama").value = "";
-    document.getElementById("obatAturan").value = "";
-    document.getElementById("obatCatatan").value = "";
-    ["obatPagi","obatSiang","obatSore","obatMalam"].forEach(id => document.getElementById(id).checked = false);
-
-    simpan();
-  }
-
-  function tambahLab() {
-    const tanggal = document.getElementById("labTanggal").value;
-    const nilai = document.getElementById("labNilai").value;
-
-    if (!tanggal || !nilai) return alert("Tanggal dan nilai lab wajib diisi");
-
-    labData.push({
-      tanggal,
-      jenis: document.getElementById("labJenis").value,
-      nilai: Number(nilai),
-      catatan: document.getElementById("labCatatan").value
-    });
-
-    document.getElementById("labNilai").value = "";
-    document.getElementById("labCatatan").value = "";
-
-    simpan();
-  }
-
-  function tambahDiagnosa() {
-    const nama = document.getElementById("diagNama").value.trim();
-    if (!nama) return alert("Diagnosa wajib diisi");
-
-    diagnosaData.push({
-      tanggal: document.getElementById("diagTanggal").value,
-      nama,
-      dokter: document.getElementById("diagDokter").value,
-      catatan: document.getElementById("diagCatatan").value
-    });
-
-    document.getElementById("diagNama").value = "";
-    document.getElementById("diagDokter").value = "";
-    document.getElementById("diagCatatan").value = "";
-
-    simpan();
-  }
-
-  function tambahPengingat() {
-    const tanggal = document.getElementById("ingatTanggal").value;
-    const jam = document.getElementById("ingatJam").value;
-    if (!tanggal || !jam) return alert("Tanggal dan jam wajib diisi");
-
-    pengingatData.push({
-      jenis: document.getElementById("ingatJenis").value,
-      tanggal,
-      jam,
-      catatan: document.getElementById("ingatCatatan").value
-    });
-
-    document.getElementById("ingatCatatan").value = "";
-
-    simpan();
-  }
-
-  function tambahAktivitas() {
-    const tanggal = document.getElementById("aktTanggal").value;
-    if (!tanggal) return alert("Tanggal wajib diisi");
-
-    aktivitasData.push({
-      tanggal,
-      jenis: document.getElementById("aktJenis").value,
-      durasi: document.getElementById("aktDurasi").value,
-      catatan: document.getElementById("aktCatatan").value
-    });
-
-    document.getElementById("aktDurasi").value = "";
-    document.getElementById("aktCatatan").value = "";
-
-    simpan();
-  }
-
-  function hapusData(type, index) {
-    if (!confirm("Hapus data ini?")) return;
-
-    if (type === "obat") obatData.splice(index,1);
-    if (type === "lab") labData.splice(index,1);
-    if (type === "diagnosa") diagnosaData.splice(index,1);
-    if (type === "pengingat") pengingatData.splice(index,1);
-    if (type === "aktivitas") aktivitasData.splice(index,1);
-
-    simpan();
-  }
-
-  function renderAll() {
-    document.getElementById("statObat").innerText = obatData.length;
-    document.getElementById("statLab").innerText = labData.length;
-    document.getElementById("statDiagnosa").innerText = diagnosaData.length;
-    document.getElementById("statAktivitas").innerText = aktivitasData.length;
-
-    renderObat();
-    renderPengingatObatHariIni();
-    renderLab();
-    renderDiagnosa();
-    renderPengingat();
-    renderAktivitas();
-    renderGrafikLab();
-  }
-
-  function renderObat() {
-    const box = document.getElementById("daftarObat");
-
-    const urut = [...obatData].sort((a,b) =>
-      a.nama.localeCompare(b.nama, "id", { sensitivity: "base" })
-    );
-
-    if (!urut.length) {
-      box.innerHTML = `<div class="empty">Belum ada data obat.</div>`;
-      return;
-    }
-
-    box.innerHTML = urut.map(item => {
-      const indexAsli = obatData.indexOf(item);
-      let jadwal = [];
-      if (item.pagi) jadwal.push("☀️ Pagi");
-      if (item.siang) jadwal.push("🌤️ Siang");
-      if (item.sore) jadwal.push("🌇 Sore");
-      if (item.malam) jadwal.push("🌙 Malam");
-
-      return `
-        <div class="list-item">
-          <div class="list-title">${item.nama}</div>
-          <div class="list-meta">${item.aturan || "-"}<br>${item.catatan || ""}</div>
-          <div class="badge-row">${jadwal.map(j => `<span class="badge">${j}</span>`).join("")}</div>
-          <button class="small-btn danger" onclick="hapusData('obat',${indexAsli})">Hapus</button>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function renderPengingatObatHariIni() {
-    const box = document.getElementById("pengingatObatHariIni");
-
-    const urut = [...obatData].sort((a,b) =>
-      a.nama.localeCompare(b.nama, "id", { sensitivity: "base" })
-    );
-
-    if (!urut.length) {
-      box.innerHTML = `<div class="empty">Belum ada jadwal obat.</div>`;
-      return;
-    }
-
-    box.innerHTML = urut.map(item => {
-      let jadwal = [];
-      if (item.pagi) jadwal.push("☀️ Pagi");
-      if (item.siang) jadwal.push("🌤️ Siang");
-      if (item.sore) jadwal.push("🌇 Sore");
-      if (item.malam) jadwal.push("🌙 Malam");
-
-      if (!jadwal.length) return "";
-
-      return `
-        <div class="list-item">
-          <div class="list-title">${item.nama}</div>
-          <div class="list-meta">${item.aturan || ""}</div>
-          <div class="badge-row">${jadwal.map(j => `<span class="badge">${j}</span>`).join("")}</div>
-        </div>
-      `;
-    }).join("") || `<div class="empty">Belum ada jadwal obat aktif.</div>`;
-  }
-
-  function renderLab() {
-    const box = document.getElementById("daftarLab");
-    const lastBox = document.getElementById("labTerakhir");
-
-    const daftar = [...labData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    if (!daftar.length) {
-      box.innerHTML = `<div class="empty">Belum ada data lab.</div>`;
-      lastBox.innerHTML = `<div class="empty">Belum ada hasil lab.</div>`;
-      return;
-    }
-
-    const terakhir = daftar[0];
-    lastBox.innerHTML = `
-      <div class="list-item">
-        <div class="list-title">${terakhir.jenis}: ${terakhir.nilai}</div>
-        <div class="list-meta">${formatTanggal(terakhir.tanggal)}<br>${terakhir.catatan || ""}</div>
-      </div>
-    `;
-
-    box.innerHTML = daftar.map(item => {
-      const indexAsli = labData.indexOf(item);
-      return `
-        <div class="list-item">
-          <div class="list-title">${item.jenis}: ${item.nilai}</div>
-          <div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.catatan || ""}</div>
-          <button class="small-btn danger" onclick="hapusData('lab',${indexAsli})">Hapus</button>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function renderGrafikLab() {
-    const canvas = document.getElementById("labChart");
-    if (!canvas) return;
-
-    const urutTanggal = [...labData].sort((a,b) =>
-      new Date(a.tanggal) - new Date(b.tanggal)
-    );
-
-    const labels = urutTanggal.map(x => formatTanggalPendek(x.tanggal));
-    const data = urutTanggal.map(x => x.nilai);
-
-    if (labChartInstance) labChartInstance.destroy();
-
-    labChartInstance = new Chart(canvas, {
-      type: "line",
-      data: {
-        labels,
-        datasets: [{
-          label: "Nilai Lab",
-          data,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              afterLabel: function(context) {
-                const item = urutTanggal[context.dataIndex];
-                return item.jenis + (item.catatan ? " - " + item.catatan : "");
-              }
-            }
-          },
-          legend: {
-            display: true
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: false
-          }
-        }
-      }
-    });
-  }
-
-  function renderDiagnosa() {
-    const box = document.getElementById("daftarDiagnosa");
-    const daftar = [...diagnosaData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    if (!daftar.length) {
-      box.innerHTML = `<div class="empty">Belum ada diagnosa.</div>`;
-      return;
-    }
-
-    box.innerHTML = daftar.map(item => {
-      const indexAsli = diagnosaData.indexOf(item);
-      return `
-        <div class="list-item">
-          <div class="list-title">${item.nama}</div>
-          <div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.dokter || ""}<br>${item.catatan || ""}</div>
-          <button class="small-btn danger" onclick="hapusData('diagnosa',${indexAsli})">Hapus</button>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function renderPengingat() {
-    const box = document.getElementById("daftarPengingat");
-
-    const daftar = [...pengingatData].sort((a,b) =>
-      new Date(a.tanggal + "T" + a.jam) - new Date(b.tanggal + "T" + b.jam)
-    );
-
-    if (!daftar.length) {
-      box.innerHTML = `<div class="empty">Belum ada pengingat.</div>`;
-      return;
-    }
-
-    box.innerHTML = daftar.map(item => {
-      const indexAsli = pengingatData.indexOf(item);
-      return `
-        <div class="list-item">
-          <div class="list-title">${item.jenis}</div>
-          <div class="list-meta">${formatTanggal(item.tanggal)} • ${item.jam}<br>${item.catatan || ""}</div>
-          <button class="small-btn danger" onclick="hapusData('pengingat',${indexAsli})">Hapus</button>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function renderAktivitas() {
-    const box = document.getElementById("daftarAktivitas");
-    const daftar = [...aktivitasData].sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal));
-
-    if (!daftar.length) {
-      box.innerHTML = `<div class="empty">Belum ada aktivitas.</div>`;
-      return;
-    }
-
-    box.innerHTML = daftar.map(item => {
-      const indexAsli = aktivitasData.indexOf(item);
-      return `
-        <div class="list-item">
-          <div class="list-title">${ikonAktivitas(item.jenis)} ${item.jenis}</div>
-          <div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.durasi || ""}<br>${item.catatan || ""}</div>
-          <button class="small-btn danger" onclick="hapusData('aktivitas',${indexAsli})">Hapus</button>
-        </div>
-      `;
-    }).join("");
-  }
-
-  function ikonAktivitas(jenis) {
-    const ikon = {
-      "Jalan Kaki": "🚶",
-      "Lari": "🏃",
-      "Sepeda": "🚴",
-      "Senam": "🤸",
-      "Renang": "🏊",
-      "Gym": "🏋️",
-      "Peregangan": "🧘",
-      "Yoga": "🧘"
-    };
-    return ikon[jenis] || "✅";
-  }
-
-  function formatTanggal(tgl) {
-    if (!tgl) return "-";
-    return new Date(tgl).toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric"
-    });
-  }
-
-  function formatTanggalPendek(tgl) {
-    if (!tgl) return "-";
-    return new Date(tgl).toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "short"
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const today = new Date().toISOString().split("T")[0];
-
-    ["labTanggal","diagTanggal","ingatTanggal","aktTanggal"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && !el.value) el.value = today;
-    });
-
-    renderAll();
-  });
-
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js").catch(() => {});
-  }
+let obatData=JSON.parse(localStorage.getItem("obatData"))||[];
+let labData=JSON.parse(localStorage.getItem("labData"))||[];
+let diagnosaData=JSON.parse(localStorage.getItem("diagnosaData"))||[];
+let pengingatData=JSON.parse(localStorage.getItem("pengingatData"))||[];
+let aktivitasData=JSON.parse(localStorage.getItem("aktivitasData"))||[];
+let labChartInstance=null;
+
+function simpan(){
+localStorage.setItem("obatData",JSON.stringify(obatData));
+localStorage.setItem("labData",JSON.stringify(labData));
+localStorage.setItem("diagnosaData",JSON.stringify(diagnosaData));
+localStorage.setItem("pengingatData",JSON.stringify(pengingatData));
+localStorage.setItem("aktivitasData",JSON.stringify(aktivitasData));
+renderAll();
+}
+
+function showSection(id,btn){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+btn.classList.add("active");
+if(id==="lab")setTimeout(renderGrafikLab,200);
+}
+
+function kategoriWaktu(jam){
+if(!jam)return "";
+const h=Number(jam.split(":")[0]);
+if(h>=4&&h<11)return "Pagi";
+if(h>=11&&h<15)return "Siang";
+if(h>=15&&h<18)return "Sore";
+return "Malam";
+}
+
+function ikonWaktu(waktu){
+if(waktu==="Pagi")return "☀️";
+if(waktu==="Siang")return "🌤️";
+if(waktu==="Sore")return "🌇";
+if(waktu==="Malam")return "🌙";
+return "⏰";
+}
+
+function jadwalObat(item){
+if(item.jam){
+const waktu=item.waktu||kategoriWaktu(item.jam);
+return [`${ikonWaktu(waktu)} ${item.jam} • ${waktu}`];
+}
+let arr=[];
+if(item.pagi)arr.push("☀️ Pagi");
+if(item.siang)arr.push("🌤️ Siang");
+if(item.sore)arr.push("🌇 Sore");
+if(item.malam)arr.push("🌙 Malam");
+return arr;
+}
+
+function tambahObat(){
+const nama=document.getElementById("obatNama").value.trim();
+const jam=document.getElementById("obatJam").value;
+if(!nama)return alert("Nama obat wajib diisi");
+if(!jam)return alert("Jam minum obat wajib diisi");
+obatData.push({
+nama,
+aturan:document.getElementById("obatAturan").value,
+jam,
+waktu:kategoriWaktu(jam),
+catatan:document.getElementById("obatCatatan").value
+});
+["obatNama","obatAturan","obatJam","obatCatatan"].forEach(id=>document.getElementById(id).value="");
+simpan();
+}
+
+function tambahLab(){
+const tanggal=document.getElementById("labTanggal").value;
+const nilai=document.getElementById("labNilai").value;
+if(!tanggal||!nilai)return alert("Tanggal dan nilai lab wajib diisi");
+labData.push({tanggal,jenis:document.getElementById("labJenis").value,nilai:Number(nilai),catatan:document.getElementById("labCatatan").value});
+document.getElementById("labNilai").value="";
+document.getElementById("labCatatan").value="";
+simpan();
+}
+
+function tambahDiagnosa(){
+const nama=document.getElementById("diagNama").value.trim();
+if(!nama)return alert("Diagnosa wajib diisi");
+diagnosaData.push({tanggal:document.getElementById("diagTanggal").value,nama,dokter:document.getElementById("diagDokter").value,catatan:document.getElementById("diagCatatan").value});
+["diagNama","diagDokter","diagCatatan"].forEach(id=>document.getElementById(id).value="");
+simpan();
+}
+
+function tambahPengingat(){
+const tanggal=document.getElementById("ingatTanggal").value;
+const jam=document.getElementById("ingatJam").value;
+if(!tanggal||!jam)return alert("Tanggal dan jam wajib diisi");
+pengingatData.push({jenis:document.getElementById("ingatJenis").value,tanggal,jam,catatan:document.getElementById("ingatCatatan").value});
+document.getElementById("ingatCatatan").value="";
+simpan();
+}
+
+function tambahAktivitas(){
+const tanggal=document.getElementById("aktTanggal").value;
+if(!tanggal)return alert("Tanggal wajib diisi");
+aktivitasData.push({tanggal,jenis:document.getElementById("aktJenis").value,durasi:document.getElementById("aktDurasi").value,catatan:document.getElementById("aktCatatan").value});
+document.getElementById("aktDurasi").value="";
+document.getElementById("aktCatatan").value="";
+simpan();
+}
+
+function hapusData(type,index){
+if(!confirm("Hapus data ini?"))return;
+if(type==="obat")obatData.splice(index,1);
+if(type==="lab")labData.splice(index,1);
+if(type==="diagnosa")diagnosaData.splice(index,1);
+if(type==="pengingat")pengingatData.splice(index,1);
+if(type==="aktivitas")aktivitasData.splice(index,1);
+simpan();
+}
+
+function renderAll(){
+document.getElementById("statObat").innerText=obatData.length;
+document.getElementById("statLab").innerText=labData.length;
+document.getElementById("statDiagnosa").innerText=diagnosaData.length;
+document.getElementById("statAktivitas").innerText=aktivitasData.length;
+renderObat();renderPengingatObatHariIni();renderLab();renderDiagnosa();renderPengingat();renderAktivitas();renderGrafikLab();
+}
+
+function renderObat(){
+const box=document.getElementById("daftarObat");
+const urut=[...obatData].sort((a,b)=>(a.nama||"").localeCompare(b.nama||"","id",{sensitivity:"base"}));
+if(!urut.length){box.innerHTML=`<div class="empty">Belum ada data obat.</div>`;return}
+box.innerHTML=urut.map(item=>{
+const indexAsli=obatData.indexOf(item);
+const jadwal=jadwalObat(item);
+return `<div class="list-item">
+<div class="list-title">${item.nama}</div>
+<div class="list-meta">${item.aturan||"-"}<br>${item.catatan||""}</div>
+<div class="badge-row">${jadwal.map(j=>`<span class="badge">${j}</span>`).join("")}</div>
+<button class="small-btn danger" onclick="hapusData('obat',${indexAsli})">Hapus</button>
+</div>`;
+}).join("");
+}
+
+function renderPengingatObatHariIni(){
+const box=document.getElementById("pengingatObatHariIni");
+const urut=[...obatData].sort((a,b)=>(a.nama||"").localeCompare(b.nama||"","id",{sensitivity:"base"}));
+if(!urut.length){box.innerHTML=`<div class="empty">Belum ada jadwal obat.</div>`;return}
+box.innerHTML=urut.map(item=>{
+const jadwal=jadwalObat(item);
+return `<div class="list-item">
+<div class="list-title">${item.nama}</div>
+<div class="list-meta">${item.aturan||""}</div>
+<div class="badge-row">${jadwal.map(j=>`<span class="badge">${j}</span>`).join("")}</div>
+</div>`;
+}).join("");
+}
+
+function renderLab(){
+const box=document.getElementById("daftarLab");
+const lastBox=document.getElementById("labTerakhir");
+const daftar=[...labData].sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal));
+if(!daftar.length){box.innerHTML=`<div class="empty">Belum ada data lab.</div>`;lastBox.innerHTML=`<div class="empty">Belum ada hasil lab.</div>`;return}
+const terakhir=daftar[0];
+lastBox.innerHTML=`<div class="list-item"><div class="list-title">${terakhir.jenis}: ${terakhir.nilai}</div><div class="list-meta">${formatTanggal(terakhir.tanggal)}<br>${terakhir.catatan||""}</div></div>`;
+box.innerHTML=daftar.map(item=>{
+const indexAsli=labData.indexOf(item);
+return `<div class="list-item"><div class="list-title">${item.jenis}: ${item.nilai}</div><div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.catatan||""}</div><button class="small-btn danger" onclick="hapusData('lab',${indexAsli})">Hapus</button></div>`;
+}).join("");
+}
+
+function renderGrafikLab(){
+const canvas=document.getElementById("labChart");
+if(!canvas)return;
+const urutTanggal=[...labData].sort((a,b)=>new Date(a.tanggal)-new Date(b.tanggal));
+const labels=urutTanggal.map(x=>formatTanggalPendek(x.tanggal));
+const data=urutTanggal.map(x=>x.nilai);
+if(labChartInstance)labChartInstance.destroy();
+labChartInstance=new Chart(canvas,{type:"line",data:{labels,datasets:[{label:"Nilai Lab",data,tension:.3}]},options:{responsive:true,plugins:{tooltip:{callbacks:{afterLabel:function(context){const item=urutTanggal[context.dataIndex];return item.jenis+(item.catatan?" - "+item.catatan:"")}}}},scales:{y:{beginAtZero:false}}}});
+}
+
+function renderDiagnosa(){
+const box=document.getElementById("daftarDiagnosa");
+const daftar=[...diagnosaData].sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal));
+if(!daftar.length){box.innerHTML=`<div class="empty">Belum ada diagnosa.</div>`;return}
+box.innerHTML=daftar.map(item=>{
+const indexAsli=diagnosaData.indexOf(item);
+return `<div class="list-item"><div class="list-title">${item.nama}</div><div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.dokter||""}<br>${item.catatan||""}</div><button class="small-btn danger" onclick="hapusData('diagnosa',${indexAsli})">Hapus</button></div>`;
+}).join("");
+}
+
+function renderPengingat(){
+const box=document.getElementById("daftarPengingat");
+const daftar=[...pengingatData].sort((a,b)=>new Date(a.tanggal+"T"+a.jam)-new Date(b.tanggal+"T"+b.jam));
+if(!daftar.length){box.innerHTML=`<div class="empty">Belum ada pengingat.</div>`;return}
+box.innerHTML=daftar.map(item=>{
+const indexAsli=pengingatData.indexOf(item);
+return `<div class="list-item"><div class="list-title">${item.jenis}</div><div class="list-meta">${formatTanggal(item.tanggal)} • ${item.jam}<br>${item.catatan||""}</div><button class="small-btn danger" onclick="hapusData('pengingat',${indexAsli})">Hapus</button></div>`;
+}).join("");
+}
+
+function renderAktivitas(){
+const box=document.getElementById("daftarAktivitas");
+const daftar=[...aktivitasData].sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal));
+if(!daftar.length){box.innerHTML=`<div class="empty">Belum ada aktivitas.</div>`;return}
+box.innerHTML=daftar.map(item=>{
+const indexAsli=aktivitasData.indexOf(item);
+return `<div class="list-item"><div class="list-title">${ikonAktivitas(item.jenis)} ${item.jenis}</div><div class="list-meta">${formatTanggal(item.tanggal)}<br>${item.durasi||""}<br>${item.catatan||""}</div><button class="small-btn danger" onclick="hapusData('aktivitas',${indexAsli})">Hapus</button></div>`;
+}).join("");
+}
+
+function ikonAktivitas(jenis){
+const ikon={"Jalan Kaki":"🚶","Lari":"🏃","Sepeda":"🚴","Senam":"🤸","Renang":"🏊","Gym":"🏋️","Peregangan":"🧘","Yoga":"🧘"};
+return ikon[jenis]||"✅";
+}
+
+function formatTanggal(tgl){
+if(!tgl)return "-";
+return new Date(tgl).toLocaleDateString("id-ID",{day:"2-digit",month:"long",year:"numeric"});
+}
+
+function formatTanggalPendek(tgl){
+if(!tgl)return "-";
+return new Date(tgl).toLocaleDateString("id-ID",{day:"2-digit",month:"short"});
+}
+
+function backupData(){
+const data={obatData,labData,diagnosaData,pengingatData,aktivitasData};
+const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+const a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="backup-apps-sehat-tije.json";
+a.click();
+}
+
+function restoreData(event){
+const file=event.target.files[0];
+if(!file)return;
+const reader=new FileReader();
+reader.onload=function(e){
+try{
+const data=JSON.parse(e.target.result);
+obatData=data.obatData||[];
+labData=data.labData||[];
+diagnosaData=data.diagnosaData||[];
+pengingatData=data.pengingatData||[];
+aktivitasData=data.aktivitasData||[];
+simpan();
+alert("Data berhasil direstore.");
+}catch(err){alert("File backup tidak valid.");}
+};
+reader.readAsText(file);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+const today=new Date().toISOString().split("T")[0];
+["labTanggal","diagTanggal","ingatTanggal","aktTanggal"].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=today});
+renderAll();
+});
+
+if("serviceWorker"in navigator){
+navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+}
 </script>
-
 </body>
 </html>
