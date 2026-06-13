@@ -1,4 +1,4 @@
-const CACHE_NAME = "apps-sehat-tije-v3";
+const CACHE_NAME = "apps-sehat-tije-v5";
 
 const FILES_TO_CACHE = [
   "./",
