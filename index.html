@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Apps Sehat Pribadi</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Apps Sehat" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #eef6f7;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, #0f766e, #2563eb);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .logo {
+      width: 86px;
+      height: 86px;
+      border-radius: 24px;
+      background: white;
+      color: #0f766e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      margin: 0 auto 18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    p {
+      margin: 8px 0 0;
+      font-size: 14px;
+      opacity: .95;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      display: block;
+      background: #eef6f7;
+    }
+
+    #offline {
+      display: none;
+      position: fixed;
+      left: 16px;
+      right: 16px;
+      bottom: 18px;
+      z-index: 20;
+      background: #0f172a;
+      color: white;
+      padding: 14px;
+      border-radius: 14px;
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="splash">
+    <div>
+      <div class="logo">💙</div>
+      <h1>Apps Sehat</h1>
+      <p>Catatan kesehatan pribadi Tri Tjahyono</p>
+      <p>Memuat aplikasi...</p>
+    </div>
+  </div>
+
+  <iframe
+    id="appFrame"
+    src="https://script.google.com/macros/s/AKfycbyjpJ-hqTnirxrp1d_ti9G9LdaffQwv9FSQLTqdeHbasV7LNSaFgm8NZxwHgwb3uofB/exec"
+    allow="camera; microphone; geolocation; clipboard-read; clipboard-write"
+    onload="hideSplash()">
+  </iframe>
+
+  <div id="offline">
+    Koneksi internet terputus. Beberapa fitur mungkin tidak dapat digunakan.
+  </div>
+
+  <script>
+    function hideSplash() {
+      setTimeout(function () {
+        document.getElementById('splash').style.display = 'none';
+      }, 800);
+    }
+
+    function checkOnline() {
+      const box = document.getElementById('offline');
+      box.style.display = navigator.onLine ? 'none' : 'block';
+    }
+
+    window.addEventListener('online', checkOnline);
+    window.addEventListener('offline', checkOnline);
+    checkOnline();
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./service-worker.js');
+      });
+    }
+  </script>
+
+</body>
+</html>
